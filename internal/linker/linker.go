@@ -145,7 +145,7 @@ func Link(profiles []string, dryRun bool) error {
 
 		// Check if source file exists
 		if _, err := os.Stat(sourcePath); os.IsNotExist(err) {
-			fmt.Fprintf(os.Stderr, "Warning: Source file does not exist: %s\n", sourcePath)
+			utils.FprintfColor(os.Stderr, "yellow", "Warning: Source file does not exist: %s\n", sourcePath)
 			continue
 		}
 
@@ -160,7 +160,7 @@ func Link(profiles []string, dryRun bool) error {
 				}
 
 				if linkTarget == sourcePath {
-					fmt.Printf("Skipped (already correct): %s -> %s\n", targetPath, sourcePath)
+					utils.PrintfColor("gray", "Skipped (already correct): %s -> %s\n", targetPath, sourcePath)
 					continue
 				} else {
 					// Remove existing symlink to override it
@@ -180,7 +180,7 @@ func Link(profiles []string, dryRun bool) error {
 						continue
 					}
 				}
-				fmt.Printf("Backed up: %s -> %s.bak\n", targetPath, targetPath)
+				utils.PrintfColor("blue", "Backed up: %s -> %s.bak\n", targetPath, targetPath)
 			}
 		}
 
@@ -197,7 +197,7 @@ func Link(profiles []string, dryRun bool) error {
 			if err := os.Symlink(sourcePath, targetPath); err != nil {
 				fmt.Fprintf(os.Stderr, "Error creating link %s -> %s: %v\n", targetPath, sourcePath, err)
 			} else {
-				fmt.Printf("Created: %s -> %s\n", targetPath, sourcePath)
+				utils.PrintfColor("green", "Created: %s -> %s\n", targetPath, sourcePath)
 			}
 		}
 	}

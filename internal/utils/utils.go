@@ -94,3 +94,74 @@ func LogError(format string, args ...interface{}) {
 func LogWarning(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, "Warning: "+format+"\n", args...)
 }
+
+// Color constants
+const (
+	Reset  = "\033[0m"
+	Red    = "\033[31m"
+	Green  = "\033[32m"
+	Yellow = "\033[33m"
+	Blue   = "\033[34m"
+	Purple = "\033[35m"
+	Cyan   = "\033[36m"
+	Gray   = "\033[37m"
+	White  = "\033[97m"
+)
+
+// PrintLn prints text with color
+func PrintLn(text string, colorChoice string) {
+	switch colorChoice {
+	case "red":
+		fmt.Println(Red + text + Reset)
+	case "green":
+		fmt.Println(Green + text + Reset)
+	case "yellow":
+		fmt.Println(Yellow + text + Reset)
+	case "blue":
+		fmt.Println(Blue + text + Reset)
+	case "gray":
+		fmt.Println(Gray + text + Reset)
+	default:
+		fmt.Println(White + text + Reset)
+	}
+}
+
+// PrintfColor prints formatted text with color
+func PrintfColor(colorChoice string, format string, args ...interface{}) {
+	var color string
+	switch colorChoice {
+	case "red":
+		color = Red
+	case "green":
+		color = Green
+	case "yellow":
+		color = Yellow
+	case "blue":
+		color = Blue
+	case "gray":
+		color = Gray
+	default:
+		color = White
+	}
+	fmt.Printf(color+format+Reset, args...)
+}
+
+// FprintfColor prints formatted text with color to a specific writer
+func FprintfColor(writer *os.File, colorChoice string, format string, args ...interface{}) {
+	var color string
+	switch colorChoice {
+	case "red":
+		color = Red
+	case "green":
+		color = Green
+	case "yellow":
+		color = Yellow
+	case "blue":
+		color = Blue
+	case "gray":
+		color = Gray
+	default:
+		color = White
+	}
+	fmt.Fprintf(writer, color+format+Reset, args...)
+}
