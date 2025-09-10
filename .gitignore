@@ -36,6 +36,7 @@ Thumbs.db
 # Project specific
 dist/
 build/
+bin/
 *.log
 dot-prd.md
 dot-todo.md
