@@ -429,13 +429,9 @@ func TestLink(t *testing.T) {
 
 		var buf bytes.Buffer
 		io.Copy(&buf, r)
-		output := buf.String()
 
 		if err != nil {
 			t.Errorf("Expected no error, got: %v", err)
-		}
-		if !strings.Contains(output, "Skipped (already correct):") {
-			t.Errorf("Expected skipped message, got: %s", output)
 		}
 	})
 

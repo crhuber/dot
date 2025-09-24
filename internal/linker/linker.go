@@ -160,7 +160,6 @@ func Link(profiles []string, dryRun bool) error {
 				}
 
 				if linkTarget == sourcePath {
-					utils.PrintfColor("gray", "Skipped (already correct): %s -> %s\n", targetPath, sourcePath)
 					continue
 				} else {
 					// Remove existing symlink to override it
