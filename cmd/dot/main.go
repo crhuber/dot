@@ -30,7 +30,9 @@ func main() {
 			cloneCmd(),
 			linkCmd(),
 			listCmd(),
+			openCmd(),
 			rootCmd(),
+			updateCmd(),
 		},
 	}
 
@@ -138,6 +140,26 @@ func rootCmd() *cli.Command {
 		Usage: "Print the dotfiles repository path and exit",
 		Action: func(_ context.Context, _ *cli.Command) error {
 			return dotfiles.PrintRoot()
+		},
+	}
+}
+
+func updateCmd() *cli.Command {
+	return &cli.Command{
+		Name:  "update",
+		Usage: "Update the dotfiles repository by running git pull",
+		Action: func(_ context.Context, _ *cli.Command) error {
+			return dotfiles.Update()
+		},
+	}
+}
+
+func openCmd() *cli.Command {
+	return &cli.Command{
+		Name:  "open",
+		Usage: "Open the dotfiles directory in the system file manager",
+		Action: func(_ context.Context, _ *cli.Command) error {
+			return dotfiles.Open()
 		},
 	}
 }

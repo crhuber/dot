@@ -439,3 +439,96 @@ func TestCloneDirectoryReadFailure(t *testing.T) {
 		// This verifies the directory check would pass in Clone
 	})
 }
+
+// Test Update function
+func TestUpdate(t *testing.T) {
+	originalDotDir := os.Getenv("DOT_DIR")
+	defer func() {
+		if originalDotDir != "" {
+			os.Setenv("DOT_DIR", originalDotDir)
+		} else {
+			os.Unsetenv("DOT_DIR")
+		}
+	}()
+
+	t.Run("Update fails when dotfiles directory doesn't exist", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "nonexistent")
+		os.Setenv("DOT_DIR", dotfilesDir)
+
+		err := Update()
+		if err == nil {
+			t.Error("Expected error for non-existent directory")
+		}
+		if !strings.Contains(err.Error(), "does not exist") {
+			t.Errorf("Expected error about non-existent directory, got: %v", err)
+		}
+	})
+
+	t.Run("Update fails when not a git repository", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "notgit")
+		os.Setenv("DOT_DIR", dotfilesDir)
+
+		// Create directory but not as git repo
+		if err := os.MkdirAll(dotfilesDir, 0755); err != nil {
+			t.Fatalf("Failed to create directory: %v", err)
+		}
+
+		err := Update()
+		if err == nil {
+			t.Error("Expected error for non-git directory")
+		}
+		if !strings.Contains(err.Error(), "failed to update dotfiles repository") {
+			t.Errorf("Expected update error, got: %v", err)
+		}
+	})
+}
+
+// Test Open function
+func TestOpen(t *testing.T) {
+	originalDotDir := os.Getenv("DOT_DIR")
+	defer func() {
+		if originalDotDir != "" {
+			os.Setenv("DOT_DIR", originalDotDir)
+		} else {
+			os.Unsetenv("DOT_DIR")
+		}
+	}()
+
+	t.Run("Open fails when dotfiles directory doesn't exist", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "nonexistent")
+		os.Setenv("DOT_DIR", dotfilesDir)
+
+		err := Open()
+		if err == nil {
+			t.Error("Expected error for non-existent directory")
+		}
+		if !strings.Contains(err.Error(), "does not exist") {
+			t.Errorf("Expected error about non-existent directory, got: %v", err)
+		}
+	})
+
+	t.Run("Open handles directory existence check", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "existing")
+		os.Setenv("DOT_DIR", dotfilesDir)
+
+		// Create directory
+		if err := os.MkdirAll(dotfilesDir, 0755); err != nil {
+			t.Fatalf("Failed to create directory: %v", err)
+		}
+
+		// We can't fully test the open command without a GUI environment,
+		// but we can verify it gets past the directory check
+		// The actual open command will fail in test environment, which is expected
+		err := Open()
+		// In test environment without GUI, this will likely fail, which is OK
+		// We're mainly testing that it doesn't error on directory existence check
+		if err != nil && !strings.Contains(err.Error(), "failed to open dotfiles directory") &&
+			!strings.Contains(err.Error(), "no suitable file manager command found") {
+			t.Errorf("Unexpected error type: %v", err)
+		}
+	})
+}

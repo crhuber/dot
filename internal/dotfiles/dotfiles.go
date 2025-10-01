@@ -72,3 +72,79 @@ func PrintRoot() error {
 	fmt.Println(dotfilesDir)
 	return nil
 }
+
+// Update changes to the dotfiles directory and runs git pull
+func Update() error {
+	dotfilesDir, err := GetDotfilesDir()
+	if err != nil {
+		return err
+	}
+
+	// Check if the dotfiles directory exists
+	if _, err := os.Stat(dotfilesDir); os.IsNotExist(err) {
+		return fmt.Errorf("dotfiles directory %s does not exist", dotfilesDir)
+	}
+
+	// Execute git pull command in the dotfiles directory
+	cmd := exec.Command("git", "pull")
+	cmd.Dir = dotfilesDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to update dotfiles repository: %w", err)
+	}
+
+	return nil
+}
+
+// Open opens the dotfiles directory in the system file manager
+func Open() error {
+	dotfilesDir, err := GetDotfilesDir()
+	if err != nil {
+		return err
+	}
+
+	// Check if the dotfiles directory exists
+	if _, err := os.Stat(dotfilesDir); os.IsNotExist(err) {
+		return fmt.Errorf("dotfiles directory %s does not exist", dotfilesDir)
+	}
+
+	// Determine the command based on the operating system
+	// Try different commands in order of likelihood
+	var cmd *exec.Cmd
+	var cmdErr error
+
+	// Try macOS first
+	if _, err := exec.LookPath("open"); err == nil {
+		cmd = exec.Command("open", dotfilesDir)
+		cmdErr = cmd.Run()
+		if cmdErr == nil {
+			return nil
+		}
+	}
+
+	// Try Linux/Unix with xdg-open
+	if _, err := exec.LookPath("xdg-open"); err == nil {
+		cmd = exec.Command("xdg-open", dotfilesDir)
+		cmdErr = cmd.Run()
+		if cmdErr == nil {
+			return nil
+		}
+	}
+
+	// Try Windows
+	if _, err := exec.LookPath("explorer"); err == nil {
+		cmd = exec.Command("explorer", dotfilesDir)
+		cmdErr = cmd.Run()
+		if cmdErr == nil {
+			return nil
+		}
+	}
+
+	if cmdErr != nil {
+		return fmt.Errorf("failed to open dotfiles directory: %w", cmdErr)
+	}
+
+	return fmt.Errorf("no suitable file manager command found (tried: open, xdg-open, explorer)")
+}
