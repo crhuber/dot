@@ -7,6 +7,8 @@ A command-line tool for managing dotfiles using symbolic links and profiles. Wri
 - **Profile-based configuration**: Organize dotfiles for different environments (general, work, etc.)
 - **Symbolic link management**: Automatically create, check, and clean symbolic links
 - **Repository cloning**: Clone dotfiles repositories from remote URLs
+- **Repository updates**: Update your dotfiles with a single command
+- **Quick access**: Open dotfiles directory in your file manager
 - **Backup functionality**: Automatically backup existing files before linking
 - **Dry-run support**: Preview changes before applying them
 - **Environment variable support**: Override default paths with `$DOT_DIR`
@@ -94,6 +96,27 @@ Print the dotfiles repository path.
 dot root
 # Output: /Users/username/.dotfiles
 ```
+
+### `dot update`
+Update the dotfiles repository by running git pull.
+
+```bash
+dot update
+```
+
+This command changes to your dotfiles directory and runs `git pull` to fetch and merge the latest changes from the remote repository.
+
+### `dot open`
+Open the dotfiles directory in your system's file manager.
+
+```bash
+dot open
+```
+
+This command opens the dotfiles directory in:
+- Finder on macOS
+- File Explorer on Windows  
+- Default file manager on Linux (using xdg-open)
 
 ## Configuration
 
