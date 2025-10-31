@@ -28,6 +28,7 @@ func main() {
 			checkCmd(),
 			cleanCmd(),
 			cloneCmd(),
+			editCmd(),
 			linkCmd(),
 			listCmd(),
 			openCmd(),
@@ -88,6 +89,16 @@ func cloneCmd() *cli.Command {
 				return fmt.Errorf("exactly one argument (repository URL) is required")
 			}
 			return dotfiles.Clone(c.Args().First())
+		},
+	}
+}
+
+func editCmd() *cli.Command {
+	return &cli.Command{
+		Name:  "edit",
+		Usage: "Open the dotfiles directory in the editor defined by $EDITOR",
+		Action: func(_ context.Context, _ *cli.Command) error {
+			return dotfiles.Edit()
 		},
 	}
 }

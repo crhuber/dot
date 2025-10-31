@@ -532,3 +532,75 @@ func TestOpen(t *testing.T) {
 		}
 	})
 }
+
+// Test Edit function
+func TestEdit(t *testing.T) {
+	originalDotDir := os.Getenv("DOT_DIR")
+	originalEditor := os.Getenv("EDITOR")
+	defer func() {
+		if originalDotDir != "" {
+			os.Setenv("DOT_DIR", originalDotDir)
+		} else {
+			os.Unsetenv("DOT_DIR")
+		}
+		if originalEditor != "" {
+			os.Setenv("EDITOR", originalEditor)
+		} else {
+			os.Unsetenv("EDITOR")
+		}
+	}()
+
+	t.Run("Edit fails when dotfiles directory doesn't exist", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "nonexistent")
+		os.Setenv("DOT_DIR", dotfilesDir)
+		os.Setenv("EDITOR", "vim")
+
+		err := Edit()
+		if err == nil {
+			t.Error("Expected error for non-existent directory")
+		}
+		if !strings.Contains(err.Error(), "does not exist") {
+			t.Errorf("Expected error about non-existent directory, got: %v", err)
+		}
+	})
+
+	t.Run("Edit fails when EDITOR is not set", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "existing")
+		os.Setenv("DOT_DIR", dotfilesDir)
+		os.Unsetenv("EDITOR")
+
+		// Create directory
+		if err := os.MkdirAll(dotfilesDir, 0755); err != nil {
+			t.Fatalf("Failed to create directory: %v", err)
+		}
+
+		err := Edit()
+		if err == nil {
+			t.Error("Expected error when EDITOR is not set")
+		}
+		if !strings.Contains(err.Error(), "EDITOR environment variable is not set") {
+			t.Errorf("Expected error about EDITOR not set, got: %v", err)
+		}
+	})
+
+	t.Run("Edit handles directory existence check with EDITOR set", func(t *testing.T) {
+		tempDir := t.TempDir()
+		dotfilesDir := filepath.Join(tempDir, "existing")
+		os.Setenv("DOT_DIR", dotfilesDir)
+		// Use echo as a simple command that exists on all systems
+		os.Setenv("EDITOR", "echo")
+
+		// Create directory
+		if err := os.MkdirAll(dotfilesDir, 0755); err != nil {
+			t.Fatalf("Failed to create directory: %v", err)
+		}
+
+		err := Edit()
+		// With echo as EDITOR, this should succeed
+		if err != nil {
+			t.Errorf("Expected no error with echo as EDITOR, got: %v", err)
+		}
+	})
+}

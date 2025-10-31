@@ -106,6 +106,15 @@ dot update
 
 This command changes to your dotfiles directory and runs `git pull` to fetch and merge the latest changes from the remote repository.
 
+### `dot edit`
+Open the dotfiles directory in your editor defined by the `$EDITOR` environment variable.
+
+```bash
+dot edit
+```
+
+This command opens your dotfiles directory in your preferred editor for quick editing. The editor used is determined by the `$EDITOR` environment variable.
+
 ### `dot open`
 Open the dotfiles directory in your system's file manager.
 
@@ -148,6 +157,14 @@ The `.mappings` file in your dotfiles repository defines how files are linked. I
 export DOT_DIR="/custom/path"
 dot clone https://github.com/yourusername/dotfiles.git
 # Clones to /custom/path instead of ~/.dotfiles
+```
+
+- **`$EDITOR`**: Specify your preferred text editor for the `edit` command
+
+```bash
+export EDITOR="vim"
+dot edit
+# Opens dotfiles directory in vim
 ```
 
 ## Examples

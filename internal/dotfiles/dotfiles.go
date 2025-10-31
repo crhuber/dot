@@ -148,3 +148,34 @@ func Open() error {
 
 	return fmt.Errorf("no suitable file manager command found (tried: open, xdg-open, explorer)")
 }
+
+// Edit opens the dotfiles directory in the user's editor defined by $EDITOR
+func Edit() error {
+	dotfilesDir, err := GetDotfilesDir()
+	if err != nil {
+		return err
+	}
+
+	// Check if the dotfiles directory exists
+	if _, err := os.Stat(dotfilesDir); os.IsNotExist(err) {
+		return fmt.Errorf("dotfiles directory %s does not exist", dotfilesDir)
+	}
+
+	// Get the editor from the EDITOR environment variable
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		return fmt.Errorf("EDITOR environment variable is not set")
+	}
+
+	// Execute the editor command with the dotfiles directory
+	cmd := exec.Command(editor, dotfilesDir)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to open editor: %w", err)
+	}
+
+	return nil
+}
