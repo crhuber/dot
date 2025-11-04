@@ -97,11 +97,11 @@ dot root
 # Output: /Users/username/.dotfiles
 ```
 
-### `dot update`
-Update the dotfiles repository by running git pull.
+### `dot sync`
+Sync the dotfiles repository by running git pull.
 
 ```bash
-dot update
+dot sync
 ```
 
 This command changes to your dotfiles directory and runs `git pull` to fetch and merge the latest changes from the remote repository.
@@ -124,7 +124,7 @@ dot open
 
 This command opens the dotfiles directory in:
 - Finder on macOS
-- File Explorer on Windows  
+- File Explorer on Windows
 - Default file manager on Linux (using xdg-open)
 
 ## Configuration

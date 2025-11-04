@@ -451,12 +451,12 @@ func TestUpdate(t *testing.T) {
 		}
 	}()
 
-	t.Run("Update fails when dotfiles directory doesn't exist", func(t *testing.T) {
+	t.Run("Sync fails when dotfiles directory doesn't exist", func(t *testing.T) {
 		tempDir := t.TempDir()
 		dotfilesDir := filepath.Join(tempDir, "nonexistent")
 		os.Setenv("DOT_DIR", dotfilesDir)
 
-		err := Update()
+		err := Sync()
 		if err == nil {
 			t.Error("Expected error for non-existent directory")
 		}
@@ -465,7 +465,7 @@ func TestUpdate(t *testing.T) {
 		}
 	})
 
-	t.Run("Update fails when not a git repository", func(t *testing.T) {
+	t.Run("Sync fails when not a git repository", func(t *testing.T) {
 		tempDir := t.TempDir()
 		dotfilesDir := filepath.Join(tempDir, "notgit")
 		os.Setenv("DOT_DIR", dotfilesDir)
@@ -475,7 +475,7 @@ func TestUpdate(t *testing.T) {
 			t.Fatalf("Failed to create directory: %v", err)
 		}
 
-		err := Update()
+		err := Sync()
 		if err == nil {
 			t.Error("Expected error for non-git directory")
 		}

@@ -33,7 +33,7 @@ func main() {
 			listCmd(),
 			openCmd(),
 			rootCmd(),
-			updateCmd(),
+			syncCmd(),
 		},
 	}
 
@@ -155,12 +155,12 @@ func rootCmd() *cli.Command {
 	}
 }
 
-func updateCmd() *cli.Command {
+func syncCmd() *cli.Command {
 	return &cli.Command{
-		Name:  "update",
-		Usage: "Update the dotfiles repository by running git pull",
+		Name:  "sync",
+		Usage: "Sync the dotfiles repository by running git pull",
 		Action: func(_ context.Context, _ *cli.Command) error {
-			return dotfiles.Update()
+			return dotfiles.Sync()
 		},
 	}
 }

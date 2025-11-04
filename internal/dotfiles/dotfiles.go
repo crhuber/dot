@@ -73,8 +73,8 @@ func PrintRoot() error {
 	return nil
 }
 
-// Update changes to the dotfiles directory and runs git pull
-func Update() error {
+// Sync changes to the dotfiles directory and runs git pull
+func Sync() error {
 	dotfilesDir, err := GetDotfilesDir()
 	if err != nil {
 		return err
